@@ -1,0 +1,23 @@
+{
+  "name": "bdnc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "polyline": "^0.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clairtonluz/bdnc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clairtonluz/bdnc/issues"
+  },
+  "homepage": "https://github.com/clairtonluz/bdnc#readme"
+}
