@@ -1,6 +1,46 @@
-var polyline = require('polyline');
- 
-// returns an array of lat, lon pairs 
-var result = polyline.decode('{kpaGxzupLgAh@aA~@{@zAe@vAcA{Ae@oA_BkEm@yAm@kB}@uDYw@S[OIMGEPEP_@j@yA~A_At@QPy@h@kE`EwFxF}CdDuBdCcInJcBpBc@j@iCpDcBrCsClFwBpEuApDeClGGZqA`DoBvDcChD{AfBcA`AoB|AqGpEo@`@qB|@mA`@cBVsAJ_ABcACw@EkGm@{AEIFW?}@@]BeBNqAVaBh@eBv@kAr@w@l@_BxAu@t@_BlBkElG{FhIyApBuBzBcCvBcDrCyAzAmAvAi@v@cClD}BzC{DbGiIrLoFrHsClD_EbEaEnDwO|M{ChC}ClCqF|EcGlFc@@wAf@uBf@qADqBMkAGeAK{CMo@FoA`@e@\\cAfA]l@Yv@wCrN[`A]x@}BtDsDdGwBpDi@~Ae@zBi@hCc@zAc@bAo@`Ac@x@Md@o@bDSt@Yr@u@xAUn@S~@Kx@ElAK|Hi@~^JhCDhACrAApB@z@NrB^dCXdA`@z@f@v@^^NDl@TVh@r@|Cj@rApA|BjAhB~@dA`BzA`D~C\\t@FHTVPAHOz@a@rABvA@dAO`Bc@^I`AEbA@hBFn@CnB[hCk@R@~@@RDj@Xt@l@^d@b@l@rAhD~AtCp@x@rBdBhAt@p@VnAV`ABjIIlB?t@Nz@d@z@|@dBdBvAdA~@|@`BjBb@r@\\z@Nh@PfATlFHrALbARz@`@hAd@x@~@lAvAdAZ\\`@dA^nABh@@f@gApFS~@wExToH~]w@xCq@jBkB~EuBhFiB~DuCxFkAtBc@dAo@rBs@dD{DvSgA~FeApEgDfM_E`OeBfHeBnIgAfG_AhGa@jDqB|S[jC_AhGe@|BqGxWaAjD_CtHkDzKkAnEs@|Ci@fCsCbPoB`McAtJa@nGUhFe@r\\QtH]dHo@rIg@tE{@jGoAzGoApF_@pAaC|HaAbDw@bD{@rEa@pD_@zFO`HQtQO`Ls@br@WtP[lGm@tGY`Cu@vEgAvFeAdE{@jCgAzCaB|D{BxEeD`HeDzHwB`F_BxDkDzHaDpHyCnHwArEk@vBs@bC}@~B}A`EcBlEqAbDmAlD{@xCw@bDgAbGu@~FoC|VsD|\\qAnN}C~]aAtKq@~EaA~EmApEqAnDmAtCyL~VmEpJu@rB}JrYiDzJc@pAuAbGgB~K}@pEm@vB{@`CaBrEwBnFK^cAvDWrAq@xC_AjDoAfFe@tCiAjKy@tJeAxMOlA}AdIq@~De@rBy@tCoPlb@uMf]_@dDi@hDWp@u@hAwBlDYp@aBrEWb@a@Jk@h@kBtAi@`@Tx@jBmAx@m@RW');
+var mongoose = require('mongoose');
+var Rota = require('./models/Rota');
+var fs = require('fs');
 
-console.log(result);
+var cidades = JSON.parse(fs.readFileSync('cidades.json', 'utf8'));
+
+mongoose.connect('mongodb://localhost/bdnc');
+
+var Rota = Rota();;
+
+var limit = 10;
+var size = cidades.length -1;
+
+total = limit * size * size;
+console.log(total);
+totalProcessado = 0;
+
+console.time("duration");
+
+for(x = 0; x < limit; x++){
+
+	for(i = 0; i < cidades.length; i++){
+		let city1 = cidades[i];
+		for(j = 0; j < cidades.length; j++){
+			let city2 = cidades[j];
+			if(city1.localeCompare(city2) != 0) {
+
+				var viagem = new Rota({ origin: city1, destination: city2, route: '2213123123123' });
+				_save(viagem);
+			}
+		}
+	}
+	
+}
+
+function _save(viagem){
+	viagem.save().then(function(doc){
+		totalProcessado++;
+		// console.log(totalProcessado +'-'+total);
+		if(totalProcessado == total){
+			console.timeEnd("duration");
+			console.log("Complete");
+			process.exit();
+		}
+	});
+}

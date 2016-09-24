@@ -1,0 +1,11 @@
+var mongoose = require('mongoose');
+
+module.exports = function(){
+	return mongoose.model('Rota', 
+		{ 
+			origin: String,
+			destination: String,
+			route: String,
+		}
+	);
+}
