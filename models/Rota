@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 module.exports = function(){
 	return mongoose.model('Rota', 
 		{ 
+			_id: Number,
 			origin: String,
 			destination: String,
 			route: String,

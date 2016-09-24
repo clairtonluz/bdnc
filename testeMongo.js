@@ -2,99 +2,105 @@ var mongoose = require('mongoose');
 var Rota = require('./models/Rota');
 var fs = require('fs');
 
-var rotasJson = JSON.parse(fs.readFileSync('rotasToTeste.json', 'utf8'));
-
 mongoose.connect('mongodb://localhost/bdnc');
 
 var Rota = Rota();;
+var total = 1000000;
+console.log(total);
 
 var startTests = _startTests;
 var testeInserts = _testeInserts;
 var testeUpdates = _testeUpdates;
-var _testeDeletes = _testeDeletes;
+var testeDeletes = _testeDeletes;
+var sair = _sair;
 
 startTests();
 
-total = 100;
-console.log(total);
-totalProcessado = 0;
-
-
-
-// console.time("queries duration");
-// console.log('aa');
-// Rota.find({}, '_id', function(err, docs){
-// 	console.log('aasss');
-// 	console.timeEnd("queries duration");
-// 	// console.log(docs);
-// 	_sair();
-// });
-
-function _sair(){
-	console.log("Finish");
-	process.exit();
-}
 
 function _startTests(){
-	_testeInserts(rotasJson, function (rotas) {
-		_testeUpdates(rotas, function(){
-			_testeDeletes(rotas, function(){
-				_sair();
+	Rota.remove({}, function(err){
+		testeInserts(function () {
+			testeUpdates(function(){
+				testeDeletes(function(){
+					sair();
+				});
 			});
-		});
-	})
+		})
+	});
 }
 
-function _testeInserts(rotas, done){
+function _testeInserts(done){
+	let rotas = JSON.parse(fs.readFileSync('rotasToTeste.json', 'utf8'));
+	let totalProcessado = 0;
 	console.time("inserts duration");
-	var docs = [];
 	_save(0);
 
 	function _save(position){
-		Rota.create(rotas[position], function(err, doc){
+		let rota = rotas[position]
+		rota['_id'] = totalProcessado + 1;
+		Rota.create(rota, function(err, doc){
+			if(err) console.log(err.message);
 			totalProcessado++;
-			docs.push(doc);
+			// fs.appendFile(filename, doc['_id'] + '\n', 'utf8');
 			// console.log(totalProcessado +'-'+total);
 			if(totalProcessado < total){
 				var position = totalProcessado % rotas.length;
 				_save(position);
 			} else {
 				console.timeEnd("inserts duration");
-				done(docs);
+				done();
 			}
 		});
 	}
 }
 
-function _testeUpdates(rotas, done){
+function _testeUpdates(done){
+	let totalProcessado = 0;
 	console.time("updates duration");
-	_update(0);
-	function _update(position){
-		if(position < rotas.length){	
-			var rota = rotas[position];
-			Rota.update({_id: rota['_id']}, {$set: {destination: 'Quixadá = CE'}}, function(err, doc) {
-				_update(++position);
-			});
-		} else {
-			console.timeEnd("updates duration");
-			done();
-		}
+
+	let id = totalProcessado + 1;
+
+	_update(id);
+	function _update(id){
+		Rota.update({_id: id}, {$set: {destination: 'Quixadá = CE'}}, function(err, doc) {
+			if(err) console.log(err.message);
+			totalProcessado++;
+			if(totalProcessado < total){
+				id = totalProcessado + 1;
+				_update(id);
+			} else {
+				console.timeEnd("updates duration");
+				done();
+			}
+		});
+
 	}
 }
 
 
-function _testeDeletes(rotas, done){
+function _testeDeletes(done){
+	let totalProcessado = 0;
 	console.time("deletes duration");
-	_remove(0);
 
-	function _remove(position){
-		if(position < rotas.length){
-			Rota.remove({_id: rotas[position]['_id']}, function(err){
-				_remove(++position);	
-			});	
-		} else {
-			console.timeEnd("deletes duration");
-			done();
-		}
+	let id = totalProcessado + 1;
+
+	_remove(id);
+	function _remove(id){
+		Rota.remove({_id: id}, function(err){
+			if(err) console.log(err.message);
+			totalProcessado++;
+			if(totalProcessado < total){
+				id = totalProcessado + 1;
+				_remove(id);
+			} else {
+				console.timeEnd("deletes duration");
+				done();
+			}
+		});	
 	}
+}
+
+function _sair(){
+	console.log("Finish");
+	process.exit();
 }
