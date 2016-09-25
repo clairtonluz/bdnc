@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "mongoose": "^4.6.1",
+    "mongoose-geojson-schema": "^2.1.2",
     "polyline": "^0.2.0"
   },
   "devDependencies": {},

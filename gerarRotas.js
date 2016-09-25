@@ -64,11 +64,10 @@ function _getRota(rota) {
 
 			res.on('end', function(){
 		        let json = JSON.parse(body);
-		        let route = json.routes[0];
 		        try{
 
 					let points = json.routes[0].overview_polyline.points;
-					rota.trace = polyline.decode(points);
+					rota.route = { type: "LineString", coordinates: polyline.decode(points) }
 		        	addRota(rota);
 
 		        } catch(err){

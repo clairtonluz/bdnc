@@ -5,7 +5,7 @@ var fs = require('fs');
 mongoose.connect('mongodb://localhost/bdnc');
 
 var Rota = Rota();;
-var total = 1000000;
+var total = 100;
 console.log(total);
 
 var startTests = _startTests;
