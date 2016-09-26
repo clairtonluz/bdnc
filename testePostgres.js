@@ -1,7 +1,6 @@
 var pg = require("pg"),
     fs = require('fs'),
     readline = require("readline");
-    Parallel = require('paralleljs');
 
 
 var conString = "postgres://postgres:@localhost:5432/postgres";
@@ -75,6 +74,10 @@ client.connect( function(err){
         pool.end();
       });
   });
+  //insert: 3089491.250ms
+  //update: 3430558.115ms
+  //delete: 4355029.487ms
+
 });
 
 function testInserts( ){
