@@ -1,4 +1,5 @@
 const Aerospike = require('aerospike');
+const GeoJSON = Aerospike.GeoJSON;
 var fs = require('fs'),
     readline = require("readline");
 
@@ -40,7 +41,9 @@ var rd = readline.createInterface({
       line = line.substr( 0 , line.length - 1 );
     }
     try{
-      baseData.push( JSON.parse( line )  );    
+      var reg = JSON.parse( line ) ;
+      reg.route =  new GeoJSON( reg.route );
+      baseData.push( reg );    
     }catch(e){}
   });
 
