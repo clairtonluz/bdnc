@@ -14,10 +14,15 @@ var testeUpdates = _testeUpdates;
 var testeDeletes = _testeDeletes;
 var sair = _sair;
 
+
+var rotas = []
+
+
 startTests();
 
 
 function _startTests(){
+	rotas = JSON.parse(fs.readFileSync('rotasToTeste.json', 'utf8'));
 	Rota.remove({}, function(err){
 		testeInserts(function () {
 			testeUpdates(function(){
@@ -30,7 +35,7 @@ function _startTests(){
 }
 
 function _testeInserts(done){
-	let rotas = JSON.parse(fs.readFileSync('rotasToTeste.json', 'utf8'));
+	
 	let totalProcessado = 0;
 	console.time("inserts duration");
 	_save(0);
@@ -62,7 +67,8 @@ function _testeUpdates(done){
 
 	_update(id);
 	function _update(id){
-		Rota.update({_id: id}, {$set: {destination: 'Quixadá = CE'}}, function(err, doc) {
+		var reg = rotas[Math.floor( Math.random() * 300 )];
+		Rota.update({_id: id}, {$set: { destination: reg.destination , route: reg.route }}, function(err, doc) {
 			if(err) console.log(err.message);
 			totalProcessado++;
 			if(totalProcessado < total){
