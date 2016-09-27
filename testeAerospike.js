@@ -8,7 +8,7 @@ var fs = require('fs'),
 var baseData = [];
 var NUM_OPERATIONS = 1000000;
 //var NUM_OPERATIONS = 1000;
-
+console.log(NUM_OPERATIONS);
 
 
 var client = Aerospike.client({
