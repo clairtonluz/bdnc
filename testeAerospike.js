@@ -6,7 +6,7 @@ var fs = require('fs'),
 
 
 var baseData = [];
-var NUM_OPERATIONS = 1000000;
+var NUM_OPERATIONS = 100;
 //var NUM_OPERATIONS = 1000;
 
 
